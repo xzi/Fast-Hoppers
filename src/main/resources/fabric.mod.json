@@ -1,0 +1,30 @@
+{
+	"schemaVersion": 1,
+	"id": "fast-hoppers",
+	"version": "0.0.1",
+	"name": "Fast Hoppers",
+	"description": "Makes hoppers fast. Faster hopper go brrrrrrr",
+	"authors": [
+		"Bananzy7"
+	],
+	"contact": {
+		"sources": "https://github.com/BananaBaagel/Fast-Hoppers"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/fast-hoppers/icon.png",
+	"environment": "*",
+	"entrypoints": {
+	},
+	"mixins": [
+		"fast-hoppers.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.14.22",
+		"minecraft": "~1.20.1",
+		"java": ">=17",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}

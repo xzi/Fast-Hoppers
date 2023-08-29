@@ -1,0 +1,11 @@
+{
+	"required": true,
+	"package": "com.banana.fasthoppers.mixin",
+	"compatibilityLevel": "JAVA_17",
+	"mixins": [
+		"HopperSpeed"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}

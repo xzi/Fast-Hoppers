@@ -3,7 +3,8 @@
 	"package": "com.banana.fasthoppers.mixin",
 	"compatibilityLevel": "JAVA_17",
 	"mixins": [
-		"HopperSpeed"
+		"HopperInterface",
+		"HopperMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

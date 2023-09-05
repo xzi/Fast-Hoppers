@@ -1,19 +1,24 @@
 {
 	"schemaVersion": 1,
 	"id": "fast-hoppers",
-	"version": "0.0.1",
+	"version": "0.1.0",
 	"name": "Fast Hoppers",
-	"description": "Makes hoppers fast. Faster hopper go brrrrrrr",
+	"description": "Make hoppers go brrrrrrr",
 	"authors": [
 		"Bananzy7"
 	],
 	"contact": {
-		"sources": "https://github.com/BananaBaagel/Fast-Hoppers"
+		"homepage": "https://modrinth.com/mod/fast-hoppers",
+		"sources": "https://github.com/BananaBaagel/Fast-Hoppers",
+		"issues": "https://github.com/BananaBaagel/Fast-Hoppers/issues"
 	},
-	"license": "CC0-1.0",
+	"license": "MIT",
 	"icon": "assets/fast-hoppers/icon.png",
 	"environment": "*",
 	"entrypoints": {
+		"main": [
+			"com.banana.fasthoppers.HopperGamerule"
+		]
 	},
 	"mixins": [
 		"fast-hoppers.mixins.json"

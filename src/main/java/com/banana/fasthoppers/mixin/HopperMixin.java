@@ -16,7 +16,7 @@ public class HopperMixin {
     private static void redirectTransfer(HopperBlockEntity hopperEntity, int amount) {
         HopperInterface hopper = ((HopperInterface) HopperBlockEntity.class.cast(hopperEntity));
         int hopperCooldown = hopperEntity.getWorld().getGameRules().getInt(HopperGamerule.HOPPER_TICK);
-        hopper.setTransferCooldownAccessor((amount + 8) - hopperCooldown);
+        hopper.setTransferCooldownAccessor(hopperCooldown - (amount + 8));
         return;
     }
 

@@ -1,7 +1,7 @@
 {
 	"schemaVersion": 1,
 	"id": "fast-hoppers",
-	"version": "0.1.0",
+	"version": "${version}",
 	"name": "Fast Hoppers",
 	"description": "Make hoppers go brrrrrrr",
 	"authors": [
@@ -25,11 +25,10 @@
 	],
 	"depends": {
 		"fabricloader": ">=0.14.22",
-		"minecraft": "~1.20.1",
+		"minecraft": [
+			">=1.19.2 <=1.20.1"
+		],
 		"java": ">=17",
-		"fabric-api": "*"
-	},
-	"suggests": {
-		"another-mod": "*"
+		"fabric-api": ">=0.76.1"
 	}
 }

@@ -19,7 +19,7 @@ Read about the [configuration option](#hopperItemsPerTransfer)
 
 ## Configuration
 ### hopperTickSpeed
-In your world, you can change the tick cooldown of your hoppers with the gamerule command.
+> In your world, you can change the tick cooldown of your hoppers with the gamerule command.
 > ```
 >  /gamerule hopperTickSpeed [ticks (1+)]
 > ```
@@ -27,7 +27,7 @@ In your world, you can change the tick cooldown of your hoppers with the gamerul
 > This setting will likely break many redstone storage systems if it is below 6. If you only have one set of repeaters on the lowest setting, I recommend setting the speed to 6 ticks (~3.3 transfers/second). That is what worked for me on my server. I **highly** recommend testing your storage system with this mod in a creative world to find the right speed that works with your system.
 
 
-### hopperItemsPerTransfer (1.20+)
+### hopperItemsPerTransfer (0.2.0+)
 > **ANY VALUE ABOVE 1 WILL LIKELY BREAK YOUR REDSTONE SORTING SYSTEMS UNLESS SPECIFICALLY MADE TO ACCOUNT FOR THIS.**
 > ```
 > /gamerule hopperItemsPerTransfer [Amount (1-64)]

@@ -18,6 +18,9 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: 17
+      - name: Make gradle wrapper executable
+        if: ${{ runner.os != 'Windows' }}
+        run: chmod +x ./gradlew
       - name: Build artifacts
         run: ./gradlew clean build
       - name: Upload assets to GitHub

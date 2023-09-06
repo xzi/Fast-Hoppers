@@ -1,0 +1,28 @@
+# Used when a release is pushed to GitHub
+# This does not make use of any caching as to ensure a clean build
+name: build-release
+
+on:
+  release:
+     types:
+       - published
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v3
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: 17
+      - name: Build artifacts
+        run: ./gradlew clean build
+      - name: Upload assets to GitHub
+        uses: AButler/upload-release-assets@v2.0.2
+        with:
+          # Filter built files to disregard -sources and -dev, and leave only the minecraft-compatible jars.
+          files: 'build/libs/*[0-9].jar'
+          repo-token: ${{ secrets.RELEASE_TOKEN }}

@@ -30,6 +30,9 @@ jobs:
           key: ${{ runner.os }}-build-snapshot-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
           restore-keys: |
             ${{ runner.os }}-build-snapshot-
+      - name: Make gradle wrapper executable
+        if: ${{ runner.os != 'Windows' }}
+        run: chmod +x ./gradlew
       - name: Build artifacts
         run: ./gradlew clean build
       - name: Upload artifacts

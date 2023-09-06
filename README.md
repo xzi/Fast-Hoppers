@@ -1,11 +1,16 @@
-
-<img src="./src/main/resources/assets/fast-hoppers/icon.png" width=256 style="border-radius: 20%;">
+<a href="https://modrinth.com/mod/Zs79Mkhy">
+<img src="src/main/resources/assets/fast-hoppers/icon_rounded.png" width=128>
+</a>
 
 # Fast-Hoppers
+
+![Mod Downloads](https://img.shields.io/modrinth/dt/Zs79Mkhy?logo=modrinth&link=https%3A%2F%2Fmodrinth.com%2Fmod%2FZs79Mkhy&label=Downloads)
+![GitHub tag](https://img.shields.io/github/tag/BananaBaagel/Fast-Hoppers.svg?label=Latest%20Version)
+
 It makes hopper tick cooldown a variable.
 
 ## How to use
-Once you have the mod installed, go into any world (existing or new) and hoppers will transfer every 3 ticks (~6.7 items/second) instead of 8 (2.5 items/sec)
+Once you have the [mod](https://modrinth.com/mod/Zs79Mkhy) installed, go into any world (existing or new) and hoppers will transfer every 3 ticks (~6.7 items/second) instead of 8 (2.5 items/sec)
 
 ### Configuration
 In your world, you can change the tick cooldown of your hoppers with the gamerule command.

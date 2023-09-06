@@ -36,7 +36,7 @@ jobs:
       - name: Build artifacts
         run: ./gradlew clean build
       - name: Upload artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: Artifacts-${{ steps.ref.outputs.branch }}
           path: build/libs/*.jar

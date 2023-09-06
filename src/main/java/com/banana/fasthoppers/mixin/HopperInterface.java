@@ -8,7 +8,7 @@ import net.minecraft.block.entity.HopperBlockEntity;
 @Mixin(HopperBlockEntity.class)
 public interface HopperInterface {
     @Accessor
-    int getTransferCooldown();
+    public int getTransferCooldown();
 
     @Accessor("transferCooldown")
     public void setTransferCooldownAccessor(int cooldown);

@@ -34,7 +34,7 @@ jobs:
         if: ${{ runner.os != 'Windows' }}
         run: chmod +x ./gradlew
       - name: Build artifacts
-        run: ./gradlew clean build
+        run: ./gradlew build
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:

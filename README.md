@@ -15,7 +15,7 @@ It makes hopper tick cooldown a variable.
 Once you have the [mod](https://modrinth.com/mod/Zs79Mkhy) installed, go into any world (existing or new) and hoppers will transfer every 3 ticks (~6.7 transfers/second) instead of Minecraft's default 8 (2.5 transfers/sec)
 
 ## What does a "transfer" mean?
-Read about the [configuration option](#hopperItemsPerTransfer)
+Read about the [configuration option](#hopperItemsPerTransfer (0.2.0+))
 
 ## Configuration
 ### hopperTickSpeed

@@ -1,10 +1,9 @@
 package com.banana.fasthoppers;
 
+import org.slf4j.LoggerFactory;
 
 public class Logger {
-    // generate log4j logger
-    public static final org.apache.logging.log4j.Logger LOGGER = org.apache.logging.log4j.LogManager
-            .getLogger("Fast Hoppers");
+    public static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger("Fast Hoppers");
 
     public static void log(String message) {
         LOGGER.info(message);
@@ -22,4 +21,8 @@ public class Logger {
         LOGGER.error(message);
     }
 
+    
+    public static org.slf4j.Logger getLogger() {
+        return LOGGER;
+    }
 }

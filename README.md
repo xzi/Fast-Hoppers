@@ -42,7 +42,7 @@ Yes, please use it however you want!
 
 
 # Plans for the future
-* Make another mod that adds a sorting hopper (server-side only)
+* Make another mod that adds a [sorting hopper](https://github.com/BananaBaagel/Sorted-Hoppers) (server-side only, for vanilla user compatibility)
   * This is to fix large-scale sorting systems
   * Will likely be a regular hopper with completely custom insert code that only takes from the first slot
   * 

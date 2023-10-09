@@ -1,14 +1,6 @@
-<a href="https://modrinth.com/mod/Zs79Mkhy">
-<img src="src/main/resources/assets/fast-hoppers/icon_rounded.png" width=128>
-</a>
+<img src="https://github.com/BananaBaagel/Fast-Hoppers/blob/main/src/main/resources/assets/fast-hoppers/icon_rounded.png?raw=true" width=128 style="border-radius: 20%;">
 
-# Fast-Hoppers
-
-[![Modrinth Downloads](https://img.shields.io/modrinth/dt/Zs79Mkhy?logo=modrinth)](https://modrinth.com/mod/Zs79Mkhy)
-[![Modrinth Version](https://img.shields.io/modrinth/v/Zs79Mkhy?logo=Modrinth&label=Lastest%20Version&color=14a551)](https://modrinth.com/mod/Zs79Mkhy)
-[![Modrinth Game Versions](https://img.shields.io/modrinth/game-versions/Zs79Mkhy?logo=Modrinth&label=Supported%20Game%20Versions&color=14a551)](https://modrinth.com/mod/Zs79Mkhy)
-
-
+# Fast Hoppers
 It makes hopper tick cooldown a variable.
 
 ## How to use
@@ -42,7 +34,7 @@ Yes, please use it however you want!
 
 
 # Plans for the future
-* Make another mod that adds a [sorting hopper](https://github.com/BananaBaagel/Sorted-Hoppers) (server-side only, for vanilla user compatibility)
+* Make another mod that adds a sorting hopper (server-side only)
   * This is to fix large-scale sorting systems
   * Will likely be a regular hopper with completely custom insert code that only takes from the first slot
   * 

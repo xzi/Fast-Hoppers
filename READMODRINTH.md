@@ -37,8 +37,6 @@ Yes, please use it however you want!
 * Make another mod that adds a sorting hopper (server-side only)
   * This is to fix large-scale sorting systems
   * Will likely be a regular hopper with completely custom insert code that only takes from the first slot
-  * 
-* Update to 1.20.2 when it releases
 * Learn new skills so I can actually do all of this
 
 ___

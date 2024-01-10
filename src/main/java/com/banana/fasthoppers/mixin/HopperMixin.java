@@ -57,15 +57,15 @@ public class HopperMixin {
             Inventory inventory,
             CallbackInfoReturnable<Boolean> cir) {
 
-        Inventory inventory2 = HopperMixin.getOutputInventory(world, pos, state);
-        if (inventory2 == null) {
+        Inventory outputInv = HopperMixin.getOutputInventory(world, pos, state);
+        if (outputInv == null) {
             cir.setReturnValue(false);
             return;
         }
 
         Direction direction = state.get(HopperBlock.FACING).getOpposite();
         // Use the shadow method
-        if (HopperMixin.isInventoryFull(inventory2, direction)) {
+        if (HopperMixin.isInventoryFull(outputInv, direction)) {
             cir.setReturnValue(false);
             return;
         }
@@ -73,15 +73,26 @@ public class HopperMixin {
         // Get the max amount of items we can transfer
         int maxTransferAmount = world.getGameRules().getInt(HopperGamerule.HOPPER_ITEM_TRANSFER_COUNT);
 
+        // Iterate through all the slots in the hopper's inventory
         for (int i = 0; i < inventory.size(); ++i) {
-            if (inventory.getStack(i).isEmpty())
-                continue;
 
             // Get the item stack at slot i
             ItemStack itemStack = inventory.getStack(i);
 
+            if (itemStack.isEmpty())
+                continue;
+
+            boolean hasOpenSlot = false;
+            for (int j = 0; j < outputInv.size(); j++) {
+                if (outputInv.getStack(j).isEmpty())
+                    hasOpenSlot = true;
+            }
+
+            if (outputInv.count(itemStack.getItem()) == 0 && hasOpenSlot == false)
+                continue;
+
             // transfer the items with a split stack (with a max item count in this stack of maxTransferAmount)
-            ItemStack itemStack2 = HopperBlockEntity.transfer(inventory, inventory2,
+            ItemStack itemStack2 = HopperBlockEntity.transfer(inventory, outputInv,
                     itemStack.split(maxTransferAmount), direction);
 
             // If the transfer was successful (at least one item was transferred)
@@ -93,7 +104,7 @@ public class HopperMixin {
                 inventory.setStack(i, itemStack);
 
                 // Mark the inventory as dirty (idk, it's a minecraft thing, but it works)
-                inventory2.markDirty();
+                outputInv.markDirty();
                 cir.setReturnValue(true);
                 return;
             }
@@ -103,11 +114,11 @@ public class HopperMixin {
         return;
     }
 
-    private static boolean extractWithWorld(Hopper hopper, Inventory inventory, int slot, Direction side, World world) {
-        ItemStack itemStack = inventory.getStack(slot);
+    private static boolean extractWithWorld(Hopper hopper, Inventory inputInv, int slot, Direction side, World world) {
+        ItemStack itemStack = inputInv.getStack(slot);
 
         // If the item stack is not empty and can be extracted (shadow method)
-        if (!itemStack.isEmpty() && HopperMixin.canExtract(hopper, inventory, itemStack, slot, side)) {
+        if (!itemStack.isEmpty() && HopperMixin.canExtract(hopper, inputInv, itemStack, slot, side)) {
             // Copy the item stack
             ItemStack itemStack2 = itemStack.copy();
 
@@ -115,7 +126,7 @@ public class HopperMixin {
             int maxTransferAmount = world.getGameRules().getInt(HopperGamerule.HOPPER_ITEM_TRANSFER_COUNT);
 
             // transfer the items with a split stack (with a max item count in this stack of maxTransferAmount)
-            ItemStack itemStack3 = HopperBlockEntity.transfer(inventory, hopper,
+            ItemStack itemStack3 = HopperBlockEntity.transfer(inputInv, hopper,
                     itemStack2.split(maxTransferAmount), null);
 
             // If the transfer was successful (at least one item was transferred)
@@ -124,10 +135,10 @@ public class HopperMixin {
                 // Set the count of the split stack to include the remaining items
                 itemStack2.setCount(itemStack2.getCount() + itemStack3.getCount());
                 // Set the inventory's stack to the split + remaining itemstack
-                inventory.setStack(slot, itemStack2);
+                inputInv.setStack(slot, itemStack2);
 
                 // Mark the inventory as dirty (idk, it's a minecraft thing, but it works)
-                inventory.markDirty();
+                inputInv.markDirty();
                 return true;
             }
         }
@@ -137,18 +148,18 @@ public class HopperMixin {
 
     @Inject(method = "extract", at = @At("HEAD"), cancellable = true)
     private static void extract(World world, Hopper hopper, CallbackInfoReturnable<Boolean> cir) {
-        Inventory inventory = HopperMixin.getInputInventory(world, hopper);
-        if (inventory != null) {
+        Inventory inputInv = HopperMixin.getInputInventory(world, hopper);
+        if (inputInv != null) {
             Direction direction = Direction.DOWN;
 
             // Use the shadow method
-            if (HopperMixin.isInventoryEmpty(inventory, direction)) {
+            if (HopperMixin.isInventoryEmpty(inputInv, direction)) {
                 cir.setReturnValue(false);
                 return;
             }
             // Use the custom extractWithWorld method (to allow us to get the world's gamerules)
-            cir.setReturnValue(HopperMixin.getAvailableSlots(inventory, direction)
-                    .anyMatch(slot -> HopperMixin.extractWithWorld(hopper, inventory, slot, direction, world)));
+            cir.setReturnValue(HopperMixin.getAvailableSlots(inputInv, direction)
+                    .anyMatch(slot -> HopperMixin.extractWithWorld(hopper, inputInv, slot, direction, world)));
             return;
         }
         // Use the shadow method

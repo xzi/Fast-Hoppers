@@ -105,7 +105,6 @@ public class HopperMixin {
 
             if (isCopperHopper(inventory))
                 maxTransferAmount = Math.min(itemStack.getCount() - 1, maxTransferAmount);
-                Logger.info("Copper hopper found, max transfer amount: " + maxTransferAmount);
 
             // transfer the items with a split stack (with a max item count in this stack of maxTransferAmount)
             ItemStack itemStack2 = HopperBlockEntity.transfer(inventory, outputInv,

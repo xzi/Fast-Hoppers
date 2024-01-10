@@ -2,6 +2,7 @@ package com.banana.fasthoppers.mixin;
 
 import java.util.stream.IntStream;
 
+import org.spongepowered.asm.mixin.Dynamic;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -10,6 +11,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.banana.fasthoppers.HopperGamerule;
+import com.banana.fasthoppers.Logger;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.HopperBlock;
@@ -25,9 +27,14 @@ import net.minecraft.world.World;
 @Mixin(HopperBlockEntity.class)
 public class HopperMixin {
 
+    @Dynamic
+    private static boolean isCopperHopper(Inventory target) {
+        return false;
+    }
+
     // @Nullable Inventory from, Inventory to, ItemStack stack, int slot, @Nullable Direction side
     @Redirect(method = "Lnet/minecraft/block/entity/HopperBlockEntity;transfer(Lnet/minecraft/inventory/Inventory;Lnet/minecraft/inventory/Inventory;Lnet/minecraft/item/ItemStack;ILnet/minecraft/util/math/Direction;)Lnet/minecraft/item/ItemStack;", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/entity/HopperBlockEntity;setTransferCooldown(I)V"))
-    private static void redirectTransfer(HopperBlockEntity hopperEntity, int amount) {
+    private static void __redirectTransfer(HopperBlockEntity hopperEntity, int amount) {
         HopperInterface hopper = ((HopperInterface) HopperBlockEntity.class.cast(hopperEntity));
 
         // Get the gamerule for the custom tick cooldown
@@ -38,7 +45,7 @@ public class HopperMixin {
     }
 
     @Redirect(method = "insertAndExtract", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/entity/HopperBlockEntity;setTransferCooldown(I)V"))
-    private static void redirectInsertAndExtract(HopperBlockEntity hopperEntity, int amount) {
+    private static void __redirectInsertAndExtract(HopperBlockEntity hopperEntity, int amount) {
         HopperInterface hopper = ((HopperInterface) HopperBlockEntity.class.cast(hopperEntity));
 
         // Get the gamerule for the custom tick cooldown
@@ -50,7 +57,7 @@ public class HopperMixin {
 
     // The method called when inserting an item/block into a slot
     @Inject(method = "insert", at = @At("HEAD"), cancellable = true)
-    private static void insert(
+    private static void __insert(
             World world,
             BlockPos pos,
             BlockState state,
@@ -71,7 +78,9 @@ public class HopperMixin {
         }
 
         // Get the max amount of items we can transfer
-        int maxTransferAmount = world.getGameRules().getInt(HopperGamerule.HOPPER_ITEM_TRANSFER_COUNT);
+        int defaultMaxTransferAmount = world.getGameRules().getInt(HopperGamerule.HOPPER_ITEM_TRANSFER_COUNT);
+
+        int amountTransferred = 0;
 
         // Iterate through all the slots in the hopper's inventory
         for (int i = 0; i < inventory.size(); ++i) {
@@ -91,25 +100,34 @@ public class HopperMixin {
             if (outputInv.count(itemStack.getItem()) == 0 && hasOpenSlot == false)
                 continue;
 
+            // Set the max transfer amount to the max amount of items we can safely transfer
+            int maxTransferAmount = defaultMaxTransferAmount - amountTransferred;
+
+            if (isCopperHopper(inventory))
+                maxTransferAmount = Math.min(itemStack.getCount() - 1, maxTransferAmount);
+                Logger.info("Copper hopper found, max transfer amount: " + maxTransferAmount);
+
             // transfer the items with a split stack (with a max item count in this stack of maxTransferAmount)
             ItemStack itemStack2 = HopperBlockEntity.transfer(inventory, outputInv,
                     itemStack.split(maxTransferAmount), direction);
 
             // If the transfer was successful (at least one item was transferred)
             if (itemStack2.getCount() < maxTransferAmount) {
+                amountTransferred += itemStack2.getCount();
 
                 // Set the count of the split stack to include the remaining items
                 itemStack.setCount(itemStack.getCount() + itemStack2.getCount());
-                // Set the inventory's stack to the split + remaining itemstack
+                // Set the hopper inventory's stack to the split + remaining itemstack
                 inventory.setStack(i, itemStack);
-
-                // Mark the inventory as dirty (idk, it's a minecraft thing, but it works)
-                outputInv.markDirty();
-                cir.setReturnValue(true);
-                return;
             }
-
         }
+        if (amountTransferred > 0) {
+            // Mark the inventory as dirty (idk, it's a minecraft thing, but it works)
+            outputInv.markDirty();
+            cir.setReturnValue(true);
+            return;
+        }
+
         cir.setReturnValue(false);
         return;
     }
@@ -147,7 +165,7 @@ public class HopperMixin {
     }
 
     @Inject(method = "extract", at = @At("HEAD"), cancellable = true)
-    private static void extract(World world, Hopper hopper, CallbackInfoReturnable<Boolean> cir) {
+    private static void __extract(World world, Hopper hopper, CallbackInfoReturnable<Boolean> cir) {
         Inventory inputInv = HopperMixin.getInputInventory(world, hopper);
         if (inputInv != null) {
             Direction direction = Direction.DOWN;

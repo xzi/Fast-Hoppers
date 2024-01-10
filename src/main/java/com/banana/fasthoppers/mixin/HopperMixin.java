@@ -11,7 +11,6 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.banana.fasthoppers.HopperGamerule;
-import com.banana.fasthoppers.Logger;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.HopperBlock;
@@ -111,13 +110,19 @@ public class HopperMixin {
                     itemStack.split(maxTransferAmount), direction);
 
             // If the transfer was successful (at least one item was transferred)
-            if (itemStack2.getCount() < maxTransferAmount) {
+            if (itemStack2.getCount() > 0) {
                 amountTransferred += itemStack2.getCount();
 
                 // Set the count of the split stack to include the remaining items
                 itemStack.setCount(itemStack.getCount() + itemStack2.getCount());
                 // Set the hopper inventory's stack to the split + remaining itemstack
                 inventory.setStack(i, itemStack);
+            }
+            if (amountTransferred >= maxTransferAmount) {
+                // Mark the inventory as dirty (idk, it's a minecraft thing, but it works)
+                outputInv.markDirty();
+                cir.setReturnValue(true);
+                return;
             }
         }
         if (amountTransferred > 0) {

@@ -5,6 +5,7 @@
 # Fast-Hoppers
 
 [![Modrinth Downloads](https://img.shields.io/modrinth/dt/Zs79Mkhy?logo=modrinth)](https://modrinth.com/mod/Zs79Mkhy)
+[![Curseforge Downloads](https://img.shields.io/curseforge/dt/912142?logo=curseforge&label=Downloads)](https://www.curseforge.com/minecraft/mc-mods/fast-hoppers)
 [![Modrinth Version](https://img.shields.io/modrinth/v/Zs79Mkhy?logo=Modrinth&label=Lastest%20Version&color=14a551)](https://modrinth.com/mod/Zs79Mkhy)
 [![Modrinth Game Versions](https://img.shields.io/modrinth/game-versions/Zs79Mkhy?logo=Modrinth&label=Supported%20Game%20Versions&color=14a551)](https://modrinth.com/mod/Zs79Mkhy)
 
@@ -42,10 +43,7 @@ Yes, please use it however you want!
 
 
 # Plans for the future
-* Make another mod that adds a [sorting hopper](https://github.com/BananaBaagel/Sorted-Hoppers) (server-side only, for vanilla user compatibility)
-  * This is to fix large-scale sorting systems
-  * Will likely be a regular hopper with completely custom insert code that only takes from the first slot
-* Learn new skills so I can actually do all of this
+* Fix compatibility with the [Copper Hopper](https://github.com/pcal43/copper-hopper) mod
 
 ___
 *To those who understand, I lost the game. To those who don't, if you think about the game, you lose. You appear to be reading this, so you just lost the game.*

@@ -33,7 +33,7 @@ public class HopperMixin {
 
     // @Nullable Inventory from, Inventory to, ItemStack stack, int slot, @Nullable Direction side
     @Redirect(method = "Lnet/minecraft/block/entity/HopperBlockEntity;transfer(Lnet/minecraft/inventory/Inventory;Lnet/minecraft/inventory/Inventory;Lnet/minecraft/item/ItemStack;ILnet/minecraft/util/math/Direction;)Lnet/minecraft/item/ItemStack;", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/entity/HopperBlockEntity;setTransferCooldown(I)V"))
-    private static void __redirectTransfer(HopperBlockEntity hopperEntity, int amount) {
+    private static void __transfer__setTransferCooldown(HopperBlockEntity hopperEntity, int amount) {
         HopperInterface hopper = ((HopperInterface) HopperBlockEntity.class.cast(hopperEntity));
 
         // Get the gamerule for the custom tick cooldown
@@ -44,7 +44,7 @@ public class HopperMixin {
     }
 
     @Redirect(method = "insertAndExtract", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/entity/HopperBlockEntity;setTransferCooldown(I)V"))
-    private static void __redirectInsertAndExtract(HopperBlockEntity hopperEntity, int amount) {
+    private static void __insertAndExtract__setTransferCooldown(HopperBlockEntity hopperEntity, int amount) {
         HopperInterface hopper = ((HopperInterface) HopperBlockEntity.class.cast(hopperEntity));
 
         // Get the gamerule for the custom tick cooldown

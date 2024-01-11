@@ -2,7 +2,6 @@ package com.banana.fasthoppers.mixin;
 
 import java.util.stream.IntStream;
 
-import org.spongepowered.asm.mixin.Dynamic;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -25,11 +24,6 @@ import net.minecraft.world.World;
 
 @Mixin(HopperBlockEntity.class)
 public class HopperMixin {
-
-    @Dynamic
-    private static boolean isCopperHopper(Inventory target) {
-        return false;
-    }
 
     // @Nullable Inventory from, Inventory to, ItemStack stack, int slot, @Nullable Direction side
     @Redirect(method = "Lnet/minecraft/block/entity/HopperBlockEntity;transfer(Lnet/minecraft/inventory/Inventory;Lnet/minecraft/inventory/Inventory;Lnet/minecraft/item/ItemStack;ILnet/minecraft/util/math/Direction;)Lnet/minecraft/item/ItemStack;", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/entity/HopperBlockEntity;setTransferCooldown(I)V"))
@@ -101,9 +95,6 @@ public class HopperMixin {
 
             // Set the max transfer amount to the max amount of items we can safely transfer
             int maxTransferAmount = defaultMaxTransferAmount - amountTransferred;
-
-            if (isCopperHopper(inventory))
-                maxTransferAmount = Math.min(itemStack.getCount() - 1, maxTransferAmount);
 
             // transfer the items with a split stack (with a max item count in this stack of maxTransferAmount)
             ItemStack itemStack2 = HopperBlockEntity.transfer(inventory, outputInv,

@@ -45,5 +45,9 @@ Yes, please use it however you want!
 # Plans for the future
 * Fix compatibility with the [Copper Hopper](https://github.com/pcal43/copper-hopper) mod
 
+---
+
+I lost the game
+
 ___
 *To those who understand, I lost the game. To those who don't, if you think about the game, you lose. You appear to be reading this, so you just lost the game.*

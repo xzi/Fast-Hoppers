@@ -1,9 +1,7 @@
 package com.banana.fasthoppers.mixin;
 
 import java.util.Arrays;
-import java.util.stream.IntStream;
 
-import com.banana.fasthoppers.Logger;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -163,17 +161,12 @@ public class HopperMixin {
     private static void __extract(World world, Hopper hopper, CallbackInfoReturnable<Boolean> cir) {
         BlockPos blockPos = BlockPos.ofFloored(hopper.getHopperX(), hopper.getHopperY() + 1.0, hopper.getHopperZ());
         BlockState blockState = world.getBlockState(blockPos);
-        Logger.log("Extracting items from hopper at " + blockPos);
         Inventory inputInv = HopperMixin.getInputInventory(world, hopper, blockPos, blockState);
         if (inputInv != null) {
-            Logger.log("Input inventory is not null");
             Direction direction = Direction.DOWN;
-//            Logger.log(inputInv.)
 
-            // Use the shadow method
             if (inputInv.isEmpty()) {
                 cir.setReturnValue(false);
-                Logger.log("Input inventory is empty");
                 return;
             }
             // Use the custom extractWithWorld method (to allow us to get the world's gamerules)

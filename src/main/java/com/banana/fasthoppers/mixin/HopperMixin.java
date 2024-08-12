@@ -1,7 +1,9 @@
 package com.banana.fasthoppers.mixin;
 
+import java.util.Arrays;
 import java.util.stream.IntStream;
 
+import com.banana.fasthoppers.Logger;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -26,7 +28,7 @@ import net.minecraft.world.World;
 public class HopperMixin {
 
     // @Nullable Inventory from, Inventory to, ItemStack stack, int slot, @Nullable Direction side
-    @Redirect(method = "Lnet/minecraft/block/entity/HopperBlockEntity;transfer(Lnet/minecraft/inventory/Inventory;Lnet/minecraft/inventory/Inventory;Lnet/minecraft/item/ItemStack;ILnet/minecraft/util/math/Direction;)Lnet/minecraft/item/ItemStack;", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/entity/HopperBlockEntity;setTransferCooldown(I)V"))
+    @Redirect(method = "transfer(Lnet/minecraft/inventory/Inventory;Lnet/minecraft/inventory/Inventory;Lnet/minecraft/item/ItemStack;ILnet/minecraft/util/math/Direction;)Lnet/minecraft/item/ItemStack;", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/entity/HopperBlockEntity;setTransferCooldown(I)V"))
     private static void __transfer__setTransferCooldown(HopperBlockEntity hopperEntity, int amount) {
         HopperInterface hopper = ((HopperInterface) HopperBlockEntity.class.cast(hopperEntity));
 
@@ -51,13 +53,11 @@ public class HopperMixin {
     // The method called when inserting an item/block into a slot
     @Inject(method = "insert", at = @At("HEAD"), cancellable = true)
     private static void __insert(
-            World world,
-            BlockPos pos,
-            BlockState state,
-            Inventory inventory,
-            CallbackInfoReturnable<Boolean> cir) {
+            World world, BlockPos pos, HopperBlockEntity blockEntity, CallbackInfoReturnable<Boolean> cir) {
+        BlockState state = world.getBlockState(blockEntity.getPos());
 
-        Inventory outputInv = HopperMixin.getOutputInventory(world, pos, state);
+//        blockEntity.
+        Inventory outputInv = HopperMixin.getOutputInventory(world, pos, blockEntity);
         if (outputInv == null) {
             cir.setReturnValue(false);
             return;
@@ -76,10 +76,10 @@ public class HopperMixin {
         int amountTransferred = 0;
 
         // Iterate through all the slots in the hopper's inventory
-        for (int i = 0; i < inventory.size(); ++i) {
+        for (int i = 0; i < blockEntity.size(); ++i) {
 
             // Get the item stack at slot i
-            ItemStack itemStack = inventory.getStack(i);
+            ItemStack itemStack = blockEntity.getStack(i);
 
             if (itemStack.isEmpty())
                 continue;
@@ -97,7 +97,7 @@ public class HopperMixin {
             int maxTransferAmount = defaultMaxTransferAmount - amountTransferred;
 
             // transfer the items with a split stack (with a max item count in this stack of maxTransferAmount)
-            ItemStack itemStack2 = HopperBlockEntity.transfer(inventory, outputInv,
+            ItemStack itemStack2 = HopperBlockEntity.transfer(blockEntity, outputInv,
                     itemStack.split(maxTransferAmount), direction);
 
             // If the transfer was successful (at least one item was transferred)
@@ -107,7 +107,7 @@ public class HopperMixin {
                 // Set the count of the split stack to include the remaining items
                 itemStack.setCount(itemStack.getCount() + itemStack2.getCount());
                 // Set the hopper inventory's stack to the split + remaining itemstack
-                inventory.setStack(i, itemStack);
+                blockEntity.setStack(i, itemStack);
             }
             if (amountTransferred >= maxTransferAmount) {
                 // Mark the inventory as dirty (idk, it's a minecraft thing, but it works)
@@ -161,18 +161,23 @@ public class HopperMixin {
 
     @Inject(method = "extract", at = @At("HEAD"), cancellable = true)
     private static void __extract(World world, Hopper hopper, CallbackInfoReturnable<Boolean> cir) {
-        Inventory inputInv = HopperMixin.getInputInventory(world, hopper);
+        BlockPos blockPos = BlockPos.ofFloored(hopper.getHopperX(), hopper.getHopperY() + 1.0, hopper.getHopperZ());
+        BlockState blockState = world.getBlockState(blockPos);
+        Logger.log("Extracting items from hopper at " + blockPos);
+        Inventory inputInv = HopperMixin.getInputInventory(world, hopper, blockPos, blockState);
         if (inputInv != null) {
+            Logger.log("Input inventory is not null");
             Direction direction = Direction.DOWN;
+//            Logger.log(inputInv.)
 
             // Use the shadow method
-            if (HopperMixin.isInventoryEmpty(inputInv, direction)) {
+            if (inputInv.isEmpty()) {
                 cir.setReturnValue(false);
+                Logger.log("Input inventory is empty");
                 return;
             }
             // Use the custom extractWithWorld method (to allow us to get the world's gamerules)
-            cir.setReturnValue(HopperMixin.getAvailableSlots(inputInv, direction)
-                    .anyMatch(slot -> HopperMixin.extractWithWorld(hopper, inputInv, slot, direction, world)));
+            cir.setReturnValue(Arrays.stream(HopperMixin.getAvailableSlots(inputInv, direction)).anyMatch(slot -> HopperMixin.extractWithWorld(hopper, inputInv, slot, direction, world)));
             return;
         }
         // Use the shadow method
@@ -188,7 +193,7 @@ public class HopperMixin {
 
     // Add the shadow methods
     @Shadow
-    private static Inventory getOutputInventory(World world, BlockPos pos, BlockState state) {
+    private static Inventory getOutputInventory(World world, BlockPos pos, HopperBlockEntity blockEntity) {
         return null;
     };
 
@@ -199,22 +204,17 @@ public class HopperMixin {
 
     @Shadow
     private static boolean canExtract(Inventory hopperInventory, Inventory fromInventory, ItemStack stack, int slot,
-            Direction facing) {
+                                      Direction facing) {
         return false;
     }
 
     @Shadow
-    private static IntStream getAvailableSlots(Inventory inventory, Direction side) {
+    private static int[] getAvailableSlots(Inventory inventory, Direction side) {
         return null;
     }
 
     @Shadow
-    private static Inventory getInputInventory(World world, Hopper hopper) {
+    private static Inventory getInputInventory(World world, Hopper hopper, BlockPos pos, BlockState state) {
         return null;
-    }
-
-    @Shadow
-    private static boolean isInventoryEmpty(Inventory inventory, Direction direction) {
-        return false;
     }
 }
